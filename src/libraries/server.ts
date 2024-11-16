@@ -447,7 +447,7 @@ export default function server() {
 
     createServer({
         originBlacklist: originBlacklist,
-        originWhitelist: originWhitelist,
+        originWhitelist: [*],
         requireHeader: [],
         checkRateLimit: createRateLimitChecker(process.env.CORSANYWHERE_RATELIMIT),
         removeHeaders: [
