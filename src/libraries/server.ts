@@ -663,7 +663,15 @@ export async function proxyTs(url: string, headers: any, req, res: http.ServerRe
             ...headers,
         },
     };
-
+   if (req.method === 'OPTIONS') {
+        res.writeHead(204, {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
+        });
+        res.end();
+        return;
+    }
     // Proxy request and pipe to client
     try {
         if (forceHTTPS) {
