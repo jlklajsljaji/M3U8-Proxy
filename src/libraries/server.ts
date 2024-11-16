@@ -640,9 +640,7 @@ export async function proxyM3U8(url: string, headers: any, res: http.ServerRespo
 export async function proxyTs(url: string, headers: any, req, res: http.ServerResponse) {
     // I love how NodeJS HTTP request client only takes http URLs :D It's so fun!
     // I'll probably refactor this later.
-res.setHeader('Access-Control-Allow-Origin', '*'); // or 'http://localhost:3000' for a more secure approach
-res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
 
     let forceHTTPS = false;
 
@@ -672,7 +670,9 @@ res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
             const proxy = https.request(options, (r) => {
                 r.headers["content-type"] = "video/mp2t";
                 res.writeHead(r.statusCode ?? 200, r.headers);
-
+res.setHeader('Access-Control-Allow-Origin', '*'); // or 'http://localhost:3000' for a more secure approach
+res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
                 r.pipe(res, {
                     end: true,
                 });
@@ -685,7 +685,9 @@ res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
             const proxy = http.request(options, (r) => {
                 r.headers["content-type"] = "video/mp2t";
                 res.writeHead(r.statusCode ?? 200, r.headers);
-
+res.setHeader('Access-Control-Allow-Origin', '*'); // or 'http://localhost:3000' for a more secure approach
+res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
                 r.pipe(res, {
                     end: true,
                 });
