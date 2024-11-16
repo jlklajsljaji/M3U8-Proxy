@@ -195,7 +195,7 @@ function getHandler(options, proxy) {
         getProxyForUrl: getProxyForUrl, // Function that specifies the proxy to use
         maxRedirects: 5, // Maximum number of redirects to be followed.
         originBlacklist: [], // Requests from these origins will be blocked.
-        originWhitelist: ["*"], // If non-empty, requests not from an origin in this list will be blocked.
+        originWhitelist: [], // If non-empty, requests not from an origin in this list will be blocked.
         checkRateLimit: null, // Function that may enforce a rate-limit by returning a non-empty string.
         redirectSameOrigin: false, // Redirect the client to the requested URL for same-origin requests.
         requireHeader: null, // Require a header to be set?
@@ -447,7 +447,7 @@ export default function server() {
 
     createServer({
         originBlacklist: originBlacklist,
-        originWhitelist: ["*"],
+        originWhitelist: originWhitelist,
         requireHeader: [],
         checkRateLimit: createRateLimitChecker(process.env.CORSANYWHERE_RATELIMIT),
         removeHeaders: [
@@ -641,7 +641,6 @@ export async function proxyTs(url: string, headers: any, req, res: http.ServerRe
     // I love how NodeJS HTTP request client only takes http URLs :D It's so fun!
     // I'll probably refactor this later.
 
-
     let forceHTTPS = false;
 
     if (url.startsWith("https://")) {
@@ -663,24 +662,14 @@ export async function proxyTs(url: string, headers: any, req, res: http.ServerRe
             ...headers,
         },
     };
-   if (req.method === 'OPTIONS') {
-        res.writeHead(204, {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type',
-        });
-        res.end();
-        return;
-    }
+
     // Proxy request and pipe to client
     try {
         if (forceHTTPS) {
             const proxy = https.request(options, (r) => {
                 r.headers["content-type"] = "video/mp2t";
                 res.writeHead(r.statusCode ?? 200, r.headers);
-res.setHeader('Access-Control-Allow-Origin', '*'); // or 'http://localhost:3000' for a more secure approach
-res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
                 r.pipe(res, {
                     end: true,
                 });
@@ -693,9 +682,7 @@ res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
             const proxy = http.request(options, (r) => {
                 r.headers["content-type"] = "video/mp2t";
                 res.writeHead(r.statusCode ?? 200, r.headers);
-res.setHeader('Access-Control-Allow-Origin', '*'); // or 'http://localhost:3000' for a more secure approach
-res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
                 r.pipe(res, {
                     end: true,
                 });
